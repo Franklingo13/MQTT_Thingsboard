@@ -1,0 +1,325 @@
+Franklingo13: @workspace /fix 
+
+GitHub Copilot: Para poder ayudarte a corregir el código, necesito que me proporciones más detalles sobre el problema que estás experimentando. Por favor, proporciona información adicional como:
+
+- ¿Cuál es el error o problema que estás experimentando?
+- ¿Hay algún mensaje de error específico que estás viendo?
+- ¿Qué esperas que haga el código y qué está haciendo actualmente?
+
+Con esta información, podré proporcionarte una solución más precisa.
+
+Franklingo13: dime qué está fallando
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c: In function 'app_main':
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:91:5: error: implicit declaration of function 'i2c_master_init'; did you 
+mean 'i2c_master_write'? [-Werror=implicit-function-declaration]
+   91 |     i2c_master_init(&dev,CONFIG_SDA_GPIO,CONFIG_SCL_GPIO,CONFIG_RESET_GPIO);
+      |     ^~~~~~~~~~~~~~~
+      |     i2c_master_write
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:91:22: error: 'dev' undeclared (first use in this function); did you mean 'div'?
+   91 |     i2c_master_init(&dev,CONFIG_SDA_GPIO,CONFIG_SCL_GPIO,CONFIG_RESET_GPIO);
+      |                      ^~~
+      |                      div
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:91:22: note: each undeclared identifier is reported only once for each function it appears in
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:91:26: error: 'CONFIG_SDA_GPIO' undeclared (first use in this function)  
+   91 |     i2c_master_init(&dev,CONFIG_SDA_GPIO,CONFIG_SCL_GPIO,CONFIG_RESET_GPIO);
+      |                          ^~~~~~~~~~~~~~~
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:91:42: error: 'CONFIG_SCL_GPIO' undeclared (first use in this function)  
+   91 |     i2c_master_init(&dev,CONFIG_SDA_GPIO,CONFIG_SCL_GPIO,CONFIG_RESET_GPIO);
+      |                                          ^~~~~~~~~~~~~~~
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:91:58: error: 'CONFIG_RESET_GPIO' undeclared (first use in this function)   91 |     i2c_master_init(&dev,CONFIG_SDA_GPIO,CONFIG_SCL_GPIO,CONFIG_RESET_GPIO);
+      |                                                          ^~~~~~~~~~~~~~~~~
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:92:5: error: implicit declaration of function 'i2c_init'; did you mean '_lock_init'? [-Werror=implicit-function-declaration]
+   92 |     i2c_init(&dev,128,64);
+      |     ^~~~~~~~
+      |     _lock_init
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:102:26: warning: passing argument 2 of 'sprintf' makes pointer from integer without a cast [-Wint-conversion]
+  102 |         sprintf(message, sizeof(message),"Nivel ADC:%02d", rx_data[1]);
+      |                          ^~~~~~~~~~~~~~~
+      |                          |
+      |                          unsigned int
+In file included from D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:1:
+d:\esp32-idf\espressif\tools\xtensa-esp32-elf\esp-12.2.0_20230208\xtensa-esp32-elf\xtensa-esp32-elf\sys-include\stdio.h:244:36: note: expected 'const char * restrict' but argument is of type 'unsigned int'
+  244 | int     sprintf (char *__restrict, const char *__restrict, ...)       
+      |                                    ^
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:78:10: warning: unused variable 'lineChar' [-Wunused-variable]
+   78 |     char lineChar[20];
+      |          ^~~~~~~~
+cc1.exe: some warnings being treated as errors
+ninja: build stopped: subcommand failed.
+
+GitHub Copilot: El error que estás experimentando se debe a varias razones:
+
+1. La función `i2c_master_init` y `i2c_init` no están declaradas en tu código o no están incluidas en las bibliotecas que estás utilizando.
+
+2. La variable `dev` no está declarada en tu código.
+
+3. Las constantes `CONFIG_SDA_GPIO`, `CONFIG_SCL_GPIO` y `CONFIG_RESET_GPIO` no están definidas en tu código.
+
+4. Estás pasando un entero `sizeof(message)` a la función `sprintf` donde se espera una cadena de caracteres.
+
+5. La variable `lineChar` está declarada pero no se utiliza en tu código.
+
+Aquí tienes un ejemplo de cómo podrías corregir estos problemas:
+
+```c
+// Asegúrate de incluir las bibliotecas correctas
+#include "i2c_master.h" // o la biblioteca que contenga las funciones i2c_master_init e i2c_init
+
+// Define las constantes
+#define CONFIG_SDA_GPIO 21
+#define CONFIG_SCL_GPIO 22
+#define CONFIG_RESET_GPIO 23
+
+void app_main() {
+    // Declara la variable dev
+    i2c_dev_t dev;
+
+    // Inicializa el maestro I2C
+    i2c_master_init(&dev, CONFIG_SDA_GPIO, CONFIG_SCL_GPIO, CONFIG_RESET_GPIO);
+
+    // Inicializa I2C
+    i2c_init(&dev, 128, 64);
+
+    // ...
+
+    // Corrige el uso de sprintf
+    char message[50];
+    sprintf(message, "Nivel ADC:%02d", rx_data[1]);
+
+    // ...
+}
+```
+
+Por favor, reemplaza `i2c_master.h` con la biblioteca correcta que contiene las funciones `i2c_master_init` e `i2c_init`. Además, asegúrate de que las constantes `CONFIG_SDA_GPIO`, `CONFIG_SCL_GPIO` y `CONFIG_RESET_GPIO` estén definidas correctamente según tu configuración de hardware.
+
+Franklingo13: ya que solo estoy usando el ADC, puedo usar i2c_master_read_from_device()?
+
+GitHub Copilot: Sí, puedes usar la función `i2c_master_read_from_device()` para leer datos del ADC si tu ADC está conectado a través del bus I2C. Sin embargo, necesitarás asegurarte de que la dirección del esclavo I2C (`I2C_SLAVE_ADDR` en tu código) corresponda a la dirección del ADC en el bus I2C.
+
+Aquí tienes un ejemplo de cómo podrías hacerlo:
+
+```c
+uint8_t adc_data[2]; // Suponiendo que tu ADC devuelve 2 bytes de datos
+
+esp_err_t ret = i2c_master_read_from_device(I2C_NUM_0, I2C_SLAVE_ADDR, adc_data, 2, TIMEOUT_MS / portTICK_PERIOD_MS);
+if (ret != ESP_OK) {
+    ESP_LOGE(TAG, "Error al leer del ADC: %d", ret);
+} else {
+    int adc_value = (adc_data[0] << 8) | adc_data[1]; // Combina los dos bytes en un valor entero, ajusta esto según tu ADC
+    ESP_LOGI(TAG, "Valor ADC: %d", adc_value);
+}
+```
+
+Este código lee 2 bytes de datos del ADC a través del bus I2C y los combina en un valor entero. Asegúrate de ajustar este código según las especificaciones de tu ADC.
+
+Franklingo13: obtengo la siguiente salida en la terminal
+I (692) phy_init: phy_version 4670,719f9f6,Feb 18 2021,17:07:07
+I (802) wifi:mode : sta (c8:f0:9e:52:9e:64)
+I (802) wifi:enable tsf
+I (802) esp_now_init: WiFi init finished.
+I (802) ESPNOW: espnow [version: 1.0] init
+I (802) esp_now_init: ESP-NOW init finished.
+E (812) i2c: i2c_master_cmd_begin(1490): i2c driver not installed
+I (812) esp_now_init: 58 3b 40 3f 00 
+E (822) esp_now_init: Error al leer del ADC: 259
+E (822) i2c: i2c_master_cmd_begin(1490): i2c driver not installed
+I (832) esp_now_init: 58 3b 40 3f 00 
+
+GitHub Copilot: El error "i2c_master_cmd_begin(1490): i2c driver not installed" indica que el controlador I2C no se ha instalado correctamente. Antes de poder usar las funciones I2C, necesitas inicializar el controlador I2C con la función `i2c_param_config()` y `i2c_driver_install()`.
+
+Aquí tienes un ejemplo de cómo podrías hacerlo:
+
+```c
+// Configuración de los pines I2C
+int i2c_master_port = I2C_NUM_0;
+i2c_config_t conf = {
+    .mode = I2C_MODE_MASTER,
+    .sda_io_num = CONFIG_SDA_GPIO,
+    .sda_pullup_en = GPIO_PULLUP_ENABLE,
+    .scl_io_num = CONFIG_SCL_GPIO,
+    .scl_pullup_en = GPIO_PULLUP_ENABLE,
+    .master.clk_speed = 1000000 // 1MHz
+};
+
+// Configura el controlador I2C con los parámetros anteriores
+ESP_ERROR_CHECK(i2c_param_config(i2c_master_port, &conf));
+
+// Instala el controlador I2C
+ESP_ERROR_CHECK(i2c_driver_install(i2c_master_port, conf.mode, 0, 0, 0));
+```
+
+Asegúrate de que `CONFIG_SDA_GPIO` y `CONFIG_SCL_GPIO` estén definidos correctamente según tu configuración de hardware. Además, este código debe ejecutarse antes de cualquier llamada a las funciones I2C.
+
+Franklingo13: en mi placa 
+SDA = Gpio21
+SCL = Gpio22
+
+GitHub Copilot: De acuerdo con la información que proporcionaste, necesitas definir `CONFIG_SDA_GPIO` como 21 y `CONFIG_SCL_GPIO` como 22. Aquí está cómo puedes hacerlo:
+
+```c
+#define CONFIG_SDA_GPIO 21
+#define CONFIG_SCL_GPIO 22
+
+// Inicializar I2C
+// Configuración de los pines I2C
+int i2c_master_port = I2C_NUM_0;
+i2c_config_t conf = {
+    .mode = I2C_MODE_MASTER,
+    .sda_io_num = CONFIG_SDA_GPIO,
+    .sda_pullup_en = GPIO_PULLUP_ENABLE,
+    .scl_io_num = CONFIG_SCL_GPIO,
+    .scl_pullup_en = GPIO_PULLUP_ENABLE,
+    .master.clk_speed = 1000000 // 1MHz
+};
+
+// Configura el controlador I2C con los parámetros anteriores
+ESP_ERROR_CHECK(i2c_param_config(i2c_master_port, &conf));
+
+// Instala el controlador I2C
+ESP_ERROR_CHECK(i2c_driver_install(i2c_master_port, conf.mode, 0, 0, 0));
+
+// lectura por I2C y  transmision de datos por ESP-NOW
+while (1)
+```
+
+Esto debería resolver el problema de la instalación del controlador I2C.
+
+Franklingo13: a qué se debe este error?
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c: In function 'app_main':
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:124:82: error: '%02d' directive writing between 2 and 3 bytes into a region of size 0 [-Werror=format-overflow=]
+  124 |             sprintf(message, "{\"topic\": \"v1/devices/me/telemetry\", \"data\": %02d}", adc_value);
+      |                                                                                  ^~~~
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:124:30: note: directive argument in the range [0, 255]
+  124 |             sprintf(message, "{\"topic\": \"v1/devices/me/telemetry\", \"data\": %02d}", adc_value);
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:124:13: note: 'sprintf' output between 49 and 50 bytes into a destination of size 45
+  124 |             sprintf(message, "{\"topic\": \"v1/devices/me/telemetry\", \"data\": %02d}", adc_value);
+      |             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+cc1.exe: some warnings being treated as errors
+ninja: build stopped: subcommand failed.
+
+GitHub Copilot: El error se debe a que la cadena de formato que estás utilizando en `sprintf` puede resultar en una cadena de caracteres que es más larga que el tamaño del buffer `message`. 
+
+La cadena de formato `"{\"topic\": \"v1/devices/me/telemetry\", \"data\": %02d}"` tiene una longitud de 48 caracteres sin contar el valor que se insertará con `%02d`. Si el valor de `adc_value` es de dos dígitos, entonces la longitud total de la cadena resultante será de 50 caracteres. Sin embargo, el buffer `message` solo tiene espacio para 45 caracteres.
+
+Para solucionar este problema, puedes aumentar el tamaño del buffer `message` para que pueda contener la cadena de formato completa más el valor de `adc_value`. Por ejemplo:
+
+```c
+char message[60];
+sprintf(message, "{\"topic\": \"v1/devices/me/telemetry\", \"data\": %02d}", adc_value);
+```
+
+En este caso, he aumentado el tamaño del buffer `message` a 60 para asegurarme de que hay suficiente espacio para la cadena de formato y el valor de `adc_value`.
+
+Franklingo13: explica este error
+c D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c: In function 'app_main':
+D:/Documentos/WSN/PracticasWSN/ESP32_esp_now_ThreeNodes/esp-now_ADC_TX/main/main.c:125:30: error: too many arguments for format [-Werror=format-extra-args]
+  125 |             sprintf(message, "v1/devices/me/telemetry", " %02d", adc_value);
+      |                              ^~~~~~~~~~~~~~~~~~~~~~~~~
+cc1.exe: some warnings being treated as errors
+ninja: build stopped: subcommand failed.
+
+GitHub Copilot: El error se debe a que estás proporcionando más argumentos a la función `sprintf` de los que tu cadena de formato puede aceptar. 
+
+La cadena de formato que estás utilizando es `"v1/devices/me/telemetry"`, que no tiene especificadores de formato (como `%d` o `%s`), por lo que `sprintf` no espera ningún argumento adicional después de la cadena de formato. Sin embargo, estás proporcionando dos argumentos adicionales, `" %02d"` y `adc_value`.
+
+Si tu intención es formatear la cadena para incluir el valor de `adc_value`, debes incluir un especificador de formato en tu cadena de formato. Aquí te muestro cómo puedes hacerlo:
+
+```c
+sprintf(message, "v1/devices/me/telemetry %02d", adc_value);
+```
+
+En este caso, `%02d` es un especificador de formato que se reemplazará por el valor de `adc_value` en la cadena final.
+
+Franklingo13: quiero enviar solo al valor de adc_value
+char message[64];
+            //sprintf(message, "{\"topic\": \"v1/devices/me/telemetry\", \"data\": %02d}", adc_value);
+            sprintf(message, adc_value);
+
+GitHub Copilot: Si solo quieres enviar el valor de `adc_value`, debes convertirlo a una cadena primero. Puedes hacerlo con `sprintf`, pero necesitas proporcionar una cadena de formato. Aquí te muestro cómo puedes hacerlo:
+
+```c
+char message[64];
+sprintf(message, "%d", adc_value);
+```
+
+En este caso, `%d` es un especificador de formato que se reemplazará por el valor de `adc_value` en la cadena final.
+
+Franklingo13: quiero mejorar mi código empleando una trama estructurada para el envío de los datos, mi trama se almacena en struct_message. La lectura del ADC se almacena en adc_data, luego, se guarda únicamente el valor de interés en adc_value. Finalmente se guarda el valor de interés en la variable message y se agrega una "key" antes del dato y esta variable es enviada por ESP-NOW
+// Leer datos del ADC
+        uint8_t adc_data[5]; // Suponiendo que el ADC devuelve 5 bytes de datos
+
+        typedef struct struct_message
+        {
+            char topic[64];
+            char payload[64];
+        } struct_message;
+
+        esp_err_t ret = i2c_master_read_from_device(I2C_NUM_0, I2C_SLAVE_ADDR, adc_data, 5, TIMEOUT_MS / portTICK_PERIOD_MS);
+        ESP_LOG_BUFFER_HEX(TAG, adc_data, 5); // Ver datos en el registro
+        if (ret != ESP_OK)
+        {
+            ESP_LOGE(TAG, "Error al leer del ADC: %d", ret);
+        }
+        else
+        {
+            int adc_value = adc_data[1]; 
+            ESP_LOGI(TAG, "Valor ADC:%d", adc_value);
+            
+            // Enviar datos por ESP-NOW
+            //char mesage[20];
+            //sprintf(mesage,"Nivel ADC:%02d", adc_value);
+            char message[64];
+            
+            // Copiar el valor del ADC en el mensaje
+            // Se agrega la "key" temperature2 para identificar el dato en ThingsBoard 
+            sprintf(message, "{adc3:%d}", adc_value);
+            // Terminar en null el mensaje
+            //message[strlen(message)] = '\0';
+
+            esp_now_send(peer_mac, (uint8_t *) &message, sizeof(message));
+        }
+        vTaskDelay(pdMS_TO_TICKS(500)); 
+    }
+}
+
+GitHub Copilot: Si quieres utilizar la estructura `struct_message` para enviar los datos, puedes hacerlo de la siguiente manera:
+
+Primero, crea una instancia de `struct_message` y guarda el valor de `adc_value` en el campo `payload`. Luego, puedes enviar la estructura completa usando `esp_now_send`.
+
+```c
+typedef struct struct_message
+{
+    char topic[64];
+    char payload[64];
+} struct_message;
+
+// ...
+
+int adc_value = adc_data[1]; 
+ESP_LOGI(TAG, "Valor ADC:%d", adc_value);
+
+// Crear una instancia de struct_message
+struct_message message;
+
+// Copiar el valor del ADC en el payload
+sprintf(message.payload, "{adc3:%d}", adc_value);
+
+// Enviar datos por ESP-NOW
+esp_now_send(peer_mac, (uint8_t *) &message, sizeof(message));
+```
+
+Por favor, ten en cuenta que en este caso estás enviando la estructura completa `struct_message`, que incluye tanto el campo `topic` como `payload`. Si solo quieres enviar el campo `payload`, puedes hacerlo de la siguiente manera:
+
+```c
+esp_now_send(peer_mac, (uint8_t *) message.payload, sizeof(message.payload));
+```
+
+Además, si quieres utilizar el campo `topic`, puedes asignarle un valor de la siguiente manera:
+
+```c
+strcpy(message.topic, "v1/devices/me/telemetry");
+```
+
+Esto copiará la cadena "v1/devices/me/telemetry" en el campo `topic` de la estructura `message`.
