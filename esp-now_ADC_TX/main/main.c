@@ -27,6 +27,12 @@ static const char *TAG = "esp_now_init";
 static uint8_t peer_mac[ESP_NOW_ETH_ALEN] = {0xec, 0x62, 0x60, 0x84, 0x1f, 0x40}; // MAC rx vila
 //static uint8_t peer_mac[ESP_NOW_ETH_ALEN] = {0x40, 0x22, 0xd8, 0xef, 0x21,0xd4};
 
+// definición de la trama de datos
+uint8_t id;         // identificador del dispositivo 8 bits
+uint8_t adc1;       // valor del ADC 1 de 8 bits
+uint16_t temperatura; // valor de la temperatura de 16 bits
+uint8_t humedad;    // valor de la humedad de 8 bits
+
 // Inicialización del módulo Wi-Fi
 static esp_err_t init_wifi(void)
 {
@@ -99,47 +105,57 @@ void app_main()
     // Instala el controlador I2C
     ESP_ERROR_CHECK(i2c_driver_install(i2c_master_port, conf.mode, 0, 0, 0));
 
-    // lectura por I2C y  transmision de datos por ESP-NOW
-    while (1)
+    typedef struct struct_message
+{
+    uint8_t id[8];
+    uint8_t payload[8];
+} struct_message;
+
+int ID_sensor = 2; // ID del dispositivo ADC
+
+// lectura por I2C y  transmision de datos por ESP-NOW
+while (1)
+{
+    // Leer datos del ADC
+    uint8_t adc_data[5]; // Suponiendo que el ADC devuelve 5 bytes de datos
+
+    esp_err_t ret = i2c_master_read_from_device(I2C_NUM_0, I2C_SLAVE_ADDR, adc_data, 5, TIMEOUT_MS / portTICK_PERIOD_MS);
+    ESP_LOG_BUFFER_HEX(TAG, adc_data, 5); // Ver datos en el registro
+    if (ret != ESP_OK)
     {
-        
-        // Leer datos del ADC
-        uint8_t adc_data[5]; // Suponiendo que el ADC devuelve 5 bytes de datos
-
-        typedef struct struct_message
-        {
-            char topic[64];
-            char payload[64];
-        } struct_message;
-
-        esp_err_t ret = i2c_master_read_from_device(I2C_NUM_0, I2C_SLAVE_ADDR, adc_data, 5, TIMEOUT_MS / portTICK_PERIOD_MS);
-        ESP_LOG_BUFFER_HEX(TAG, adc_data, 5); // Ver datos en el registro
-        if (ret != ESP_OK)
-        {
-            ESP_LOGE(TAG, "Error al leer del ADC: %d", ret);
-        }
-        else
-        {
-            int adc_value = adc_data[1]; 
-            ESP_LOGI(TAG, "Valor ADC:%d", adc_value);
-            
-            // Enviar datos por ESP-NOW
-            //char mesage[20];
-            //sprintf(mesage,"Nivel ADC:%02d", adc_value);
-            char message[64];
-            
-            // Copiar el valor del ADC en el mensaje
-            // Se agrega la "key" temperature2 para identificar el dato en ThingsBoard 
-            sprintf(message, "{adc3:%d}", adc_value);
-            // Terminar en null el mensaje
-            //message[strlen(message)] = '\0';
-
-            esp_now_send(peer_mac, (uint8_t *) &message, sizeof(message));
-        }
-        vTaskDelay(pdMS_TO_TICKS(500)); 
-
-        
-
+        ESP_LOGE(TAG, "Error al leer del ADC: %d", ret);
     }
-    
+    else
+    {
+        struct_message message;
+
+        if (ID_sensor == 1)
+        {
+            // ID = 1 -> DHT11
+            strcpy((char *)message.id, "1");
+        }
+        else if (ID_sensor == 2)
+        {
+            // ID = 2 -> ADC2
+            strcpy((char *)message.id, "2");
+        }
+        else if (ID_sensor == 3)
+        {
+            // ID = 3 -> ADC3
+            strcpy((char *)message.id, "3");
+        }
+        int adc_value = adc_data[1];
+        ESP_LOGI(TAG, "Valor ADC:%d", adc_value);
+
+        // Copiar el valor del ADC en el payload
+        sprintf((char *)message.payload, "%d", adc_value);
+
+        esp_now_send(peer_mac, (uint8_t *)&message, sizeof(message));
+
+        // imprimir el mensaje en el registro tipo struct_message
+        ESP_LOGI(TAG, "Message sent: %s", message.payload);
+        ESP_LOGI(TAG, "ID: %s", message.id);
+    }
+    vTaskDelay(pdMS_TO_TICKS(500));
+}
 }
