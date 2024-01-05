@@ -115,14 +115,14 @@ void app_main()
 
 typedef struct struct_message1
 {
-    uint8_t id[8];
+    uint8_t id[2];
     uint16_t temperatura;
     uint8_t humedad;
 } struct_message1;
 
 typedef struct struct_message2
 {
-    uint8_t id[8];
+    uint8_t id[2];
     uint8_t payload[8];
 } struct_message2;
 
