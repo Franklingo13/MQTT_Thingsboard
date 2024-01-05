@@ -105,13 +105,40 @@ void app_main()
     // Instala el controlador I2C
     ESP_ERROR_CHECK(i2c_driver_install(i2c_master_port, conf.mode, 0, 0, 0));
 
+/*
     typedef struct struct_message
 {
     uint8_t id[8];
     uint8_t payload[8];
 } struct_message;
+*/
 
-int ID_sensor = 2; // ID del dispositivo ADC
+typedef struct struct_message1
+{
+    uint8_t id[8];
+    uint16_t temperatura;
+    uint8_t humedad;
+} struct_message1;
+
+typedef struct struct_message2
+{
+    uint8_t id[8];
+    uint8_t payload[8];
+} struct_message2;
+
+typedef union sensor_message
+{
+    struct_message1 message1;
+    struct_message2 message2;
+} sensor_message;
+
+/*
+ID: 1 -> DHT11
+ID: 2 -> ADC4
+ID: 3 -> ADC3
+*/
+
+int ID_sensor = 3; // ID del dispositivo ADC
 
 // lectura por I2C y  transmision de datos por ESP-NOW
 while (1)
@@ -127,34 +154,36 @@ while (1)
     }
     else
     {
-        struct_message message;
+        int adc_value = adc_data[1];
+        ESP_LOGI(TAG, "Valor ADC:%d", adc_value);
+        //struct_message message;
+        sensor_message message;
 
         if (ID_sensor == 1)
         {
             // ID = 1 -> DHT11
-            strcpy((char *)message.id, "1");
+            //strcpy((char *)message.id, "1");
+            strcpy((char *)message.message1.id, "1");
         }
-        else if (ID_sensor == 2)
+        else if (ID_sensor == 2 || ID_sensor == 3)
         {
             // ID = 2 -> ADC2
-            strcpy((char *)message.id, "2");
+            //strcpy((char *)message.id, "2");
+            strcpy((char *)message.message2.id, ID_sensor == 2 ? "2" : "3");
+            // Copiar el valor del ADC en el payload
+            sprintf((char *)message.message2.payload, "%d", adc_value);
+
+            esp_now_send(peer_mac, (uint8_t *)&message.message2, sizeof(message.message2));
+
+            // imprimir el mensaje en el registro tipo struct_message
+            ESP_LOGI(TAG, "Message sent: %s", message.message2.payload);
+            ESP_LOGI(TAG, "ID: %s", message.message2.id);
         }
-        else if (ID_sensor == 3)
+/*        else if (ID_sensor == 3)
         {
             // ID = 3 -> ADC3
             strcpy((char *)message.id, "3");
-        }
-        int adc_value = adc_data[1];
-        ESP_LOGI(TAG, "Valor ADC:%d", adc_value);
-
-        // Copiar el valor del ADC en el payload
-        sprintf((char *)message.payload, "%d", adc_value);
-
-        esp_now_send(peer_mac, (uint8_t *)&message, sizeof(message));
-
-        // imprimir el mensaje en el registro tipo struct_message
-        ESP_LOGI(TAG, "Message sent: %s", message.payload);
-        ESP_LOGI(TAG, "ID: %s", message.id);
+        }*/
     }
     vTaskDelay(pdMS_TO_TICKS(500));
 }

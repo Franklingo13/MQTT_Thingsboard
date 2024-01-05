@@ -12,5 +12,10 @@
         "board/esp32-wrover-kit-3.3v.cfg"
     ],
     "idf.pythonBinPathWin": "d:\\ESP32-IDF\\espressif\\python_env\\idf5.1_py3.11_env\\Scripts\\python.exe",
-    "idf.toolsPathWin": "d:\\ESP32-IDF\\espressif"
+    "idf.toolsPathWin": "d:\\ESP32-IDF\\espressif",
+    "idf.portWin": "COM4",
+    "idf.flashType": "UART",
+    "files.associations": {
+        "system_error": "c"
+    }
 }
