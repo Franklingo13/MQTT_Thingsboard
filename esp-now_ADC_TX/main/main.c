@@ -108,32 +108,39 @@ void app_main()
 } struct_message;
 */
 
-typedef struct struct_message1
-{
-    uint8_t tipo[2];
-    uint16_t temperatura;
-    uint8_t humedad;
+typedef struct {
+    uint8_t tipo : 2;      // 2 bits para el tipo de sensor
+    uint8_t id : 8;        // 8 bits para el ID
+    uint16_t temperatura : 9; // 9 bits para la temperatura
+    uint8_t humedad : 7;   // 7 bits para la humedad
 } struct_message1;
 
-typedef struct struct_message2
-{
-    uint8_t tipo[2];
-    uint8_t payload[8];
+typedef struct {
+    uint8_t tipo : 2;      // 2 bits para el tipo de sensor
+    uint8_t id : 8;        // 8 bits para el ID
+    uint8_t adc : 8;       // 8 bits para la lectura ADC
 } struct_message2;
 
-typedef union sensor_message
-{
+typedef struct {
+    uint8_t tipo : 2;      // 2 bits para el tipo de sensor
+    uint8_t id : 8;        // 8 bits para el ID
+    uint8_t button : 1;    // 1 bit para el estado del botón (encendido/apagado)
+} struct_message3;
+
+typedef union {
     struct_message1 message1;
     struct_message2 message2;
+    struct_message3 message3;
 } sensor_message;
+
 
 /*
 Tipo: 1 -> DHT11
-Tipo: 2 -> ADC4
-Tipo: 3 -> ADC3
+Tipo: 2 -> ADC
+Tipo: 3 -> Buttom
 */
 
-int Tipo_sensor = 3; // ID del dispositivo ADC
+int Tipo_sensor = 2; //  ADC
 
 // lectura por I2C y  transmision de datos por ESP-NOW
 while (1)
@@ -151,34 +158,32 @@ while (1)
     {
         int adc_value = adc_data[1];
         ESP_LOGI(TAG, "Valor ADC:%d", adc_value);
-        //struct_message message;
+        
         sensor_message message;
 
         if (Tipo_sensor == 1)
         {
-            // ID = 1 -> DHT11
-            //strcpy((char *)message.id, "1");
-            strcpy((char *)message.message1.tipo, "1");
+            message.message1.tipo = 1;
+            // Asignar valores a los otros campos de message1
+
         }
-        else if (Tipo_sensor == 2 || Tipo_sensor == 3)
+        else if (Tipo_sensor == 2)
         {
-            // ID = 2 -> ADC2
-            //strcpy((char *)message.id, "2");
-            strcpy((char *)message.message2.tipo, Tipo_sensor == 2 ? "2" : "3");
-            // Copiar el valor del ADC en el payload
-            sprintf((char *)message.message2.payload, "%d", adc_value);
+            message.message2.tipo = 2;
+            message.message2.id = 13;
+            message.message2.adc = adc_value;
 
             esp_now_send(peer_mac, (uint8_t *)&message.message2, sizeof(message.message2));
 
             // imprimir el mensaje en el registro tipo struct_message
-            ESP_LOGI(TAG, "Message sent: %s", message.message2.payload);
-            ESP_LOGI(TAG, "ID: %s", message.message2.tipo);
+            ESP_LOGI(TAG, "Valor enviado: %d", message.message2.adc);
+            ESP_LOGI(TAG, "Tipo: %d", message.message2.tipo);
         }
-/*        else if (ID_sensor == 3)
+        else if (Tipo_sensor == 3)
         {
-            // ID = 3 -> ADC3
-            strcpy((char *)message.id, "3");
-        }*/
+            message.message3.tipo = 3;
+            // Aquí puedes asignar valores a los otros campos de message3 si es necesario
+        }
     }
     vTaskDelay(pdMS_TO_TICKS(500));
 }
