@@ -27,11 +27,6 @@ static const char *TAG = "esp_now_init";
 static uint8_t peer_mac[ESP_NOW_ETH_ALEN] = {0xec, 0x62, 0x60, 0x84, 0x1f, 0x40}; // MAC rx vila
 //static uint8_t peer_mac[ESP_NOW_ETH_ALEN] = {0x40, 0x22, 0xd8, 0xef, 0x21,0xd4};
 
-// definición de la trama de datos
-uint8_t id;         // identificador del dispositivo 8 bits
-uint8_t adc1;       // valor del ADC 1 de 8 bits
-uint16_t temperatura; // valor de la temperatura de 16 bits
-uint8_t humedad;    // valor de la humedad de 8 bits
 
 // Inicialización del módulo Wi-Fi
 static esp_err_t init_wifi(void)
@@ -115,14 +110,14 @@ void app_main()
 
 typedef struct struct_message1
 {
-    uint8_t id[2];
+    uint8_t tipo[2];
     uint16_t temperatura;
     uint8_t humedad;
 } struct_message1;
 
 typedef struct struct_message2
 {
-    uint8_t id[2];
+    uint8_t tipo[2];
     uint8_t payload[8];
 } struct_message2;
 
@@ -133,12 +128,12 @@ typedef union sensor_message
 } sensor_message;
 
 /*
-ID: 1 -> DHT11
-ID: 2 -> ADC4
-ID: 3 -> ADC3
+Tipo: 1 -> DHT11
+Tipo: 2 -> ADC4
+Tipo: 3 -> ADC3
 */
 
-int ID_sensor = 3; // ID del dispositivo ADC
+int Tipo_sensor = 3; // ID del dispositivo ADC
 
 // lectura por I2C y  transmision de datos por ESP-NOW
 while (1)
@@ -159,17 +154,17 @@ while (1)
         //struct_message message;
         sensor_message message;
 
-        if (ID_sensor == 1)
+        if (Tipo_sensor == 1)
         {
             // ID = 1 -> DHT11
             //strcpy((char *)message.id, "1");
-            strcpy((char *)message.message1.id, "1");
+            strcpy((char *)message.message1.tipo, "1");
         }
-        else if (ID_sensor == 2 || ID_sensor == 3)
+        else if (Tipo_sensor == 2 || Tipo_sensor == 3)
         {
             // ID = 2 -> ADC2
             //strcpy((char *)message.id, "2");
-            strcpy((char *)message.message2.id, ID_sensor == 2 ? "2" : "3");
+            strcpy((char *)message.message2.tipo, Tipo_sensor == 2 ? "2" : "3");
             // Copiar el valor del ADC en el payload
             sprintf((char *)message.message2.payload, "%d", adc_value);
 
@@ -177,7 +172,7 @@ while (1)
 
             // imprimir el mensaje en el registro tipo struct_message
             ESP_LOGI(TAG, "Message sent: %s", message.message2.payload);
-            ESP_LOGI(TAG, "ID: %s", message.message2.id);
+            ESP_LOGI(TAG, "ID: %s", message.message2.tipo);
         }
 /*        else if (ID_sensor == 3)
         {
