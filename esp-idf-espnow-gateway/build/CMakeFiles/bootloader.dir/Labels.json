@@ -1,0 +1,43 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/CMakeFiles/bootloader"
+		},
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/CMakeFiles/bootloader.rule"
+		},
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/CMakeFiles/bootloader-complete.rule"
+		},
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
+		},
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
+		},
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
+		},
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
+		},
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
+		},
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
+		},
+		{
+			"file" : "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"bootloader"
+		],
+		"name" : "bootloader"
+	}
+}

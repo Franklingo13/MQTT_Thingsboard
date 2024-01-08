@@ -1,0 +1,6 @@
+source "D:/ESP32-IDF/esp-idf/components/bootloader/Kconfig.projbuild"
+source "D:/ESP32-IDF/esp-idf/components/esp_app_format/Kconfig.projbuild"
+source "D:/ESP32-IDF/esp-idf/components/esp_rom/Kconfig.projbuild"
+source "D:/ESP32-IDF/esp-idf/components/esptool_py/Kconfig.projbuild"
+source "D:/ESP32-IDF/esp-idf/components/partition_table/Kconfig.projbuild"
+source "D:/Documentos/WSN/PracticasWSN/MQTT_test/nuevo_mqtt/esp-idf-espnow-gateway/main/Kconfig.projbuild"
