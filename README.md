@@ -44,7 +44,7 @@
 
 <br>
 
-## :dart: Acerca del Proyecto ##
+## :dart: About ##
 
 Este repositorio alberga el código fuente para un sistema de monitoreo basado en nodos sensores interconectados mediante el protocolo ESP-NOW. La comunicación entre los nodos sensores y el nodo gateway se realiza de manera eficiente y de baja potencia gracias a ESP-NOW. El nodo gateway, a su vez, utiliza MQTT para enviar los datos recolectados a la plataforma Thingsboard para su visualización y análisis.
 
@@ -78,7 +78,7 @@ Tipo 3 (Botón):
 :heavy_check_mark: Feature 2;\
 :heavy_check_mark: Feature 3;
 
-## :rocket: Tecnologías Utilizadas ##
+## :rocket:  Technologies ##
 
 El proyecto hace uso de las siguientes tecnologías:
 
@@ -90,7 +90,7 @@ El proyecto hace uso de las siguientes tecnologías:
 
 Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) and [Node](https://nodejs.org/en/) installed.
 
-## :checkered_flag: Inicio Rápido ##
+## :checkered_flag: Starting ##
 
 ```bash
 # Clone this project
