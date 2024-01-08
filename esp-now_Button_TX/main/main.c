@@ -64,7 +64,7 @@ bool touch_is_pressed()
     uint16_t touch_value;
     touch_pad_read(TOUCH_BUTTON_PIN, &touch_value);
     ESP_LOGI(TAG, "Touch button value: %d", touch_value);
-    return touch_value < 480;
+    return touch_value < 470;
 }
 
 // Inicialización del módulo Wi-Fi
@@ -191,6 +191,6 @@ void app_main()
             ESP_LOGI(TAG, "Tipo: %d", message.message3.tipo);
             ESP_LOGI(TAG, "Valor enviado: %d", message.message3.button);
         }
-        vTaskDelay(pdMS_TO_TICKS(500));
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
