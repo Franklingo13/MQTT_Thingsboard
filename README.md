@@ -44,9 +44,32 @@
 
 <br>
 
-## :dart: About ##
+## :dart: Acerca del Proyecto ##
 
-Describe your project
+Este repositorio alberga el código fuente para un sistema de monitoreo basado en nodos sensores interconectados mediante el protocolo ESP-NOW. La comunicación entre los nodos sensores y el nodo gateway se realiza de manera eficiente y de baja potencia gracias a ESP-NOW. El nodo gateway, a su vez, utiliza MQTT para enviar los datos recolectados a la plataforma Thingsboard para su visualización y análisis.
+
+### Estructura de Tramas ###
+
+El proyecto utiliza diferentes tramas según el tipo de sensor, mejorando así la eficiencia de la comunicación. A continuación se describen las estructuras de las tramas:
+
+Tipo 1 (DHT11):
+ 2 bits    8 bits    9 bits       7 bits
++------+---------+---------+---------+
+| tipo |   id    |temperat.| humedad |
++------+---------+---------+---------+
+
+Tipo 2 (ADC):
+ 2 bits    8 bits    8 bits
++------+---------+---------+
+| tipo |   id    |   adc   |
++------+---------+---------+
+
+Tipo 3 (Botón):
+ 2 bits    8 bits    1 bit
++------+---------+---------+
+| tipo |   id    | button  |
++------+---------+---------+
+
 
 ## :sparkles: Features ##
 
@@ -54,21 +77,19 @@ Describe your project
 :heavy_check_mark: Feature 2;\
 :heavy_check_mark: Feature 3;
 
-## :rocket: Technologies ##
+## :rocket: Tecnologías Utilizadas ##
 
-The following tools were used in this project:
+El proyecto hace uso de las siguientes tecnologías:
 
-- [Expo](https://expo.io/)
-- [Node.js](https://nodejs.org/en/)
-- [React](https://pt-br.reactjs.org/)
-- [React Native](https://reactnative.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
+- [ESP-NOW](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_now.html)
+- [MQTT](https://mqtt.org/)
+- [Thingsboard](https://thingsboard.io/)
 
 ## :white_check_mark: Requirements ##
 
 Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) and [Node](https://nodejs.org/en/) installed.
 
-## :checkered_flag: Starting ##
+## :checkered_flag: Inicio Rápido ##
 
 ```bash
 # Clone this project
@@ -88,7 +109,7 @@ $ yarn start
 
 ## :memo: License ##
 
-This project is under license from MIT. For more details, see the [LICENSE](LICENSE) file.
+Este proyecto está bajo la Licencia MIT. Para más detalles, consulta el archivo [LICENSE](LICENSE).
 
 
 Made with :heart: by <a href="https://github.com/Franklingo13" target="_blank">Franklin</a>
