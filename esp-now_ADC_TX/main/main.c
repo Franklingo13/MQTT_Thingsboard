@@ -100,13 +100,6 @@ void app_main()
     // Instala el controlador I2C
     ESP_ERROR_CHECK(i2c_driver_install(i2c_master_port, conf.mode, 0, 0, 0));
 
-/*
-    typedef struct struct_message
-{
-    uint8_t id[8];
-    uint8_t payload[8];
-} struct_message;
-*/
 
 typedef struct {
     uint8_t tipo : 2;      // 2 bits para el tipo de sensor

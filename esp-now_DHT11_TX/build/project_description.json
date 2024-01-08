@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "esp-now_DHT11_TX",
-    "project_version":    "dd8bd1f",
+    "project_version":    "ed35608-dirty",
     "project_path":       "D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX",
     "idf_path":           "D:/ESP32-IDF/esp-idf",
     "build_dir":          "D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build",
