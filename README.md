@@ -52,23 +52,24 @@ Este repositorio alberga el código fuente para un sistema de monitoreo basado e
 
 El proyecto utiliza diferentes tramas según el tipo de sensor, mejorando así la eficiencia de la comunicación. A continuación se describen las estructuras de las tramas:
 
-Tipo 1 (DHT11):
- 2 bits    8 bits    9 bits       7 bits
-+------+---------+---------+---------+
-| tipo |   id    |temperat.| humedad |
-+------+---------+---------+---------+
+Tipo 1 (DHT11):  
+| 2 bits | 8 bits | 9 bits | 7 bits |
+| ------ | ------ | ------ | ------ |
+| tipo   | id     | temper | humed  |
 
-Tipo 2 (ADC):
- 2 bits    8 bits    8 bits
-+------+---------+---------+
-| tipo |   id    |   adc   |
-+------+---------+---------+
 
-Tipo 3 (Botón):
- 2 bits    8 bits    1 bit
-+------+---------+---------+
-| tipo |   id    | button  |
-+------+---------+---------+
+
+Tipo 2 (ADC):  
+| 2 bits | 8 bits | 8 bits |
+| ------ | ------ | ------ |
+| tipo   | id     | adc    |
+
+
+Tipo 3 (Botón):  
+| 2 bits | 8 bits | 1 bit |
+| ------ | ------ | ----- |
+| tipo   | id     | butt  |
+ 
 
 
 ## :sparkles: Features ##
