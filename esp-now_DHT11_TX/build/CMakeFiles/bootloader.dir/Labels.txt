@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/CMakeFiles/bootloader
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/CMakeFiles/bootloader.rule
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/CMakeFiles/bootloader-complete.rule
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+D:/Documentos/WSN/PracticasWSN/MQTT_Thingsboard/esp-now_DHT11_TX/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
