@@ -47,6 +47,10 @@
 ## :dart: About ##
 
 Este repositorio alberga el código fuente para un sistema de monitoreo basado en nodos sensores interconectados mediante el protocolo ESP-NOW. La comunicación entre los nodos sensores y el nodo gateway se realiza de manera eficiente y de baja potencia gracias a ESP-NOW. El nodo gateway, a su vez, utiliza MQTT para enviar los datos recolectados a la plataforma Thingsboard para su visualización y análisis.
+El nodo gateway se encuentra en la carpeta esp-idf-espnow-gateway obtenido del repositorio https://github.com/nopnop2002/esp-idf-espnow-gateway.git
+En esp-now_ADC_TX se encuentra el código para la lectura y transmisión de los datos de un ADC.
+En esp-now_Button_TX se encuentra el código para la lactura del estado de un sensor táctil del ESP32
+En esp-now_DHT11_TX se  simula la lectura de un sensor de temperatura y humedad
 
 ### Estructura de Tramas ###
 
