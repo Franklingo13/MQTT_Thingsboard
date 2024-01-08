@@ -127,7 +127,7 @@ void app_main()
         {
             message.message1.tipo = 1;
             message.message1.id = 12;
-            message.message1.temperatura = 25;
+            message.message1.temperatura = rand() % 11 +20;
             message.message1.humedad = 50;
 
             esp_now_send(peer_mac, (uint8_t *)&message.message1, sizeof(message.message1));
@@ -154,6 +154,6 @@ void app_main()
             // Aquí puedes asignar valores a los otros campos de message3 si es necesario
         }
 
-        vTaskDelay(pdMS_TO_TICKS(500));
+        vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }
