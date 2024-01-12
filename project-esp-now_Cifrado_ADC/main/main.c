@@ -13,6 +13,8 @@
 #include "driver/gpio.h"
 #include "driver/i2c.h"
 #include <string.h>
+#include "mbedtls/aes.h"
+#include "mbedtls/ctr_drbg.h"
 
 // Dirección I2C del dispositivo esclavo
 #define I2C_SLAVE_ADDR	0x68
@@ -22,6 +24,39 @@
 #define ESP_CHANNEL 1
 #define CONFIG_SDA_GPIO 21
 #define CONFIG_SCL_GPIO 22
+
+typedef struct {
+    uint8_t tipo : 2;      // 2 bits para el tipo de sensor
+    uint8_t id : 8;        // 8 bits para el ID
+    uint16_t temperatura : 9; // 9 bits para la temperatura
+    uint8_t humedad : 7;   // 7 bits para la humedad
+} struct_message1;
+
+typedef struct {
+    uint8_t tipo : 2;      // 2 bits para el tipo de sensor
+    uint8_t id : 8;        // 8 bits para el ID
+    uint8_t adc : 8;       // 8 bits para la lectura ADC
+} struct_message2;
+
+typedef struct {
+    uint8_t tipo : 2;      // 2 bits para el tipo de sensor
+    uint8_t id : 8;        // 8 bits para el ID
+    uint8_t button : 1;    // 1 bit para el estado del botón (encendido/apagado)
+} struct_message3;
+
+typedef union {
+    struct_message1 message1;
+    struct_message2 message2;
+    struct_message3 message3;
+} sensor_message;
+
+
+/*
+Tipo: 1 -> DHT11
+Tipo: 2 -> ADC
+Tipo: 3 -> Buttom
+*/
+
 
 static const char *TAG = "esp_now_init";
 static uint8_t peer_mac[ESP_NOW_ETH_ALEN] = {0xec, 0x62, 0x60, 0x84, 0x1f, 0x40}; // MAC rx vila
@@ -76,6 +111,29 @@ static esp_err_t register_peer(uint8_t *peer_mac)
     return ESP_OK;
 }
 
+// Funciones de cifrado y descifrado AES-CTR
+
+void encrypt_message2(struct_message2 *input, uint8_t *key, uint8_t *output) {
+    mbedtls_aes_context aes;
+    mbedtls_aes_init(&aes);
+    mbedtls_aes_setkey_enc(&aes, key, 256); // Configura la clave de cifrado AES
+
+    uint8_t iv[16] = {0}; // Cambiar esto a un valor seguro.
+    uint8_t stream_block[16] = {0};
+    size_t nc_off = 0;
+
+    // Cifra los datos
+    mbedtls_aes_crypt_ctr(&aes, sizeof(struct_message2), &nc_off, iv, stream_block, (uint8_t*)input, output);
+
+    mbedtls_aes_free(&aes);
+}
+
+void decrypt_message2(uint8_t *input, uint8_t *key, struct_message2 *output) {
+    // La desencriptación en CTR es exactamente la misma que la encriptación
+    encrypt_message2((struct_message2*)input, key, (uint8_t*)output);
+}
+
+
 void app_main()
 {
     // Inicializar
@@ -101,37 +159,6 @@ void app_main()
     ESP_ERROR_CHECK(i2c_driver_install(i2c_master_port, conf.mode, 0, 0, 0));
 
 
-typedef struct {
-    uint8_t tipo : 2;      // 2 bits para el tipo de sensor
-    uint8_t id : 8;        // 8 bits para el ID
-    uint16_t temperatura : 9; // 9 bits para la temperatura
-    uint8_t humedad : 7;   // 7 bits para la humedad
-} struct_message1;
-
-typedef struct {
-    uint8_t tipo : 2;      // 2 bits para el tipo de sensor
-    uint8_t id : 8;        // 8 bits para el ID
-    uint8_t adc : 8;       // 8 bits para la lectura ADC
-} struct_message2;
-
-typedef struct {
-    uint8_t tipo : 2;      // 2 bits para el tipo de sensor
-    uint8_t id : 8;        // 8 bits para el ID
-    uint8_t button : 1;    // 1 bit para el estado del botón (encendido/apagado)
-} struct_message3;
-
-typedef union {
-    struct_message1 message1;
-    struct_message2 message2;
-    struct_message3 message3;
-} sensor_message;
-
-
-/*
-Tipo: 1 -> DHT11
-Tipo: 2 -> ADC
-Tipo: 3 -> Buttom
-*/
 
 int Tipo_sensor = 2; //  ADC
 
@@ -176,6 +203,21 @@ while (1)
         {
             message.message3.tipo = 3;
             // Aquí puedes asignar valores a los otros campos de message3 si es necesario
+        }
+
+        // cifrado y descifrado de la trama y presentación de mensaje en caso de éxito
+        uint8_t key[32] = "01234567890123456789012345678901";
+        uint8_t encrypted_message[sizeof(message.message2)];
+        struct_message2 trama_descifrada;
+        encrypt_message2(&message.message2, key, encrypted_message);
+        decrypt_message2(encrypted_message, key, &trama_descifrada);
+        if (memcmp(&message.message2, &trama_descifrada, sizeof(message.message2)) == 0)
+        {
+            ESP_LOGI(TAG, "La prueba de cifrado/descifrado ha sido exitosa");
+        }
+        else
+        {
+            ESP_LOGI(TAG, "Error al descifrar la trama");
         }
     }
     vTaskDelay(pdMS_TO_TICKS(500));
